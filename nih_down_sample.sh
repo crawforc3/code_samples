@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Script to down sample NIH X-Ray dataset at https://www.kaggle.com/nih/xray1-2  [3-4, 5-6, 7-8, 9-10, 11-12]
+# Randomly samples 5% of images from the 12 zip files
+
 function get_file_count(){
   file_name=$1
   # Given a zip file name return a count of the files inside
