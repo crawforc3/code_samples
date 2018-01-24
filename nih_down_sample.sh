@@ -1,11 +1,13 @@
 #!/bin/bash
-# Script to down sample NIH X-Ray dataset at https://www.kaggle.com/nih/xray1-2  [3-4, 5-6, 7-8, 9-10, 11-12]
-# Randomly samples 5% of images from the 12 zip files
+# Script to down-sample NIH Chest X-Ray 14 dataset for https://www.kaggle.com/nih-chest-xrays/
+# Randomly samples 5% of images from 12 zip files
 
 function get_file_count(){
   file_name=$1
   # Given a zip file name return a count of the files inside
+  # tar -tf "$file_name" | grep -c png
   unzip -l "$file_name" | grep -c png
+  
 }
 
 function get_sample_size(){
@@ -16,12 +18,17 @@ function get_sample_size(){
 function extract_sample_size_names(){
   file_name=$1
   sample_size=$2
-  # Given a zip file and sample size, create a random list of file names in the zip file
+  # Given a zip file and sample size, create a random list of file names from the zip file
+  # tar -tf "$file_name" | grep png | shuf -n "$sample_size" | sed 's/   /,/g' | cut -d , -f 3
   unzip -l "$file_name" | grep png | shuf -n "$sample_size" | sed 's/   /,/g' | cut -d , -f 3
 }
 
 function create_zip(){
   zip sample.zip images/*
+}
+
+function create_tar(){
+  tar -zxcf sample.tar.gz images/*
 }
 
 function create_labels(){
@@ -33,12 +40,12 @@ function create_labels(){
   rm $temp_file
 }
 
-for file in *.zip; do
-  num_files=$(get_file_count $file)
+for zip in *.zip; do
+# for tar in *tar.gz
+  num_files=$(get_file_count $zip)
   sample_size=$(get_sample_size $num_files)
-  unzip $file $(extract_sample_size_names $file $sample_size)
+  unzip $zip $(extract_sample_size_names $zip $sample_size)
+  # create_tar
   create_zip
   create_labels Data_Entry_2017.csv 
 done
-
-
