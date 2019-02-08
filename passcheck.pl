@@ -95,7 +95,7 @@ sub hasLower {
   }
 }
 
-# Checks for a numbers
+# Checks for a number
 sub hasNumber {
   if ($password =~ /[0-9]/) {
     return 1;
