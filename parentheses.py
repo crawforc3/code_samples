@@ -58,7 +58,7 @@ def convert_to_infix(formula):
 
 if __name__ == "__main__":
     operators = ['+', '-', '*', '/', '(', ')']
-    order_of_operations = {'+':1, '-':1, '*':2, '/':2}
+    order_of_operations = {'+': 1, '-': 1, '*': 2, '/': 2}
 
     test_strings = ["1*(2+(3*(4+5)))", "x+(y+z)+(t+(v+w))", "2 + (3 / -5)"]
 
