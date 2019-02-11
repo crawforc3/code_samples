@@ -1,46 +1,71 @@
-#Parentheses removal function. Given a string containing an expression, return the expression with unnecessary parentheses removed.
-#For example:
-# 1*(2+(3*(4+5))) ===> "1*(2+3*(4+5))"
-# "2 + (3 / -5) ===> "2 + 3 / -5"
-# x+(y+z)+(t+(v+w)) ===> "x+y+z+t+v+w"
+def convert_to_postfix(formula):
+    stack = []
+    new_formula = []
+    for i,char in enumerate(formula):
+        
+        # Add numbers to posix formula
+        if char not in operators:
+            new_formula.append(char)
+            
+        # Add parentheses to stack
+        elif char == '(':
+            stack.append('(')            
+        elif char == ')':
+            # Move everything from the stack to the new_formula
+            while stack[-1] != '(':
+                #print(stack[-1])
+                new_formula.append(stack.pop(-1))
+            stack.pop(-1) # Remove the '(' for a blank stack
+            
+        # If not an operator, and not a prenthesis
+        else:
+            while stack \
+                and stack[-1] != '(' \
+                and order_of_operations[char] <= order_of_operations[stack[-1]]:
+                new_formula.append(stack.pop(-1))
+            stack.append(char)            
+            
+    # remaining
+    while stack:
+        new_formula.append(stack.pop(-1))
+    return "".join(new_formula)
 
 
-s = input("Enter your formula: ")
-print("You entered " + str(s))
 
-# Map the parentheses to string elements
-mapper = {}
-for i,thing in enumerate(s):
-    if thing == '(':
-        mapper[i] = thing
-    if thing == ')':
-        mapper[i] = thing
+def convert_to_infix(formula):
+    stack = []
+    prev_op = None
+    try:
+        for char in formula:
+            if char not in operators:
+                stack.append(char)
+            else:
+                
+                right = stack.pop()
+                left = stack.pop()
+                if prev_op and len(left) > 1 and order_of_operations[char] > order_of_operations[prev_op]:
+                    # if previous operator has lower priority
+                    # add '()' to the previous a
+                    expr = '('+left+')' + char + right
+                else:
+                    expr = left + char + right
+                stack.append(expr)
+                prev_op = char
+        return stack[-1]        
+    except IndexError:
+        print("\nWarning: This script doesn't handle negations")
+        return None
+            
 
-# how many pairs of parentheses?
-pairs = len(mapper)//2
 
-# For each pair of parentheses, Pop them out and evaluate against original forumla
-# if output of new formula == old formula, pop out the next pair of parentheses
-# if output of new formula != old formula, put parentheses back and try the next pair
-# Repeat for all pairs of parentheses 
-formula = list(s)
-for i in range(pairs):
-    #print("".join(formula))
-    test = list(formula)
-    
-    left = list(mapper.keys())[pairs-i-1] 
-    right = list(mapper.keys())[pairs+i] -i -1
-    #print(formula[left], formula[right])
-    
-    test.pop(left)
-    test.pop(right) 
-    
-    answer = eval("".join(test))
-    #print("".join(test), "=", answer)
-    
-    if eval("".join(test)) == eval("".join(formula)):
-        formula.pop(left)
-        formula.pop(right)
-        #print("".join(formula))
+if __name__ == "__main__":
+    operators = ['+', '-', '*', '/', '(', ')']
+    order_of_operations = {'+':1, '-':1, '*':2, '/':2}
 
-print("Improved formula:", "".join(formula), "=", eval("".join(formula)))
+    test_strings = ["1*(2+(3*(4+5)))", "x+(y+z)+(t+(v+w))", "2 + (3 / -5)"]
+
+    for s in test_strings:    
+        formula = s.replace(" ", "")
+        convert_to_postfix(formula)
+        post = convert_to_postfix(formula)
+        print("\n",s, "\t> ", convert_to_infix(post))
