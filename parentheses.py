@@ -31,7 +31,6 @@ def convert_to_postfix(formula):
     return "".join(new_formula)
 
 
-
 def convert_to_infix(formula):
     stack = []
     prev_op = None
@@ -55,7 +54,6 @@ def convert_to_infix(formula):
     except IndexError:
         print("\nWarning: This script doesn't handle negations")
         return None
-            
 
 
 if __name__ == "__main__":
