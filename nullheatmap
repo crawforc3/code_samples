@@ -1,0 +1,28 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+def nullheatmap(df):
+    nulldf = df.isnull().astype('int')
+    
+    fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(14,8))
+    percent = f'{round(nulldf.describe().T["mean"].mean()*100)}\%'
+    
+    title = r'$\bf{x}$'.format(x=percent) + ' of the dataset is null'
+    ax.set_title(title, fontsize=15, loc='left', color='black', pad=40)
+    im = ax.pcolormesh(nulldf.values, cmap='gray', vmin=0, vmax=1)
+    
+    ax.invert_yaxis()
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['bottom'].set_visible(False)
+    ax.spines['left'].set_visible(False) 
+    
+    ax.set_xlabel(r'$\downarrow$' + 'columns', fontsize=10, labelpad=10, horizontalalignment='left', x=0.1, y=1)
+    ax.set_ylabel('Row number', fontsize=10, labelpad=0, horizontalalignment='left', x=0, y=1.03, rotation=0)  
+    ax.xaxis.set_label_position('top')
+    ax.set_xticklabels(labels=[], rotation=90, horizontalalignment='center')
+    plt.tick_params(axis='x', which='both', bottom=False, left=False)
+    plt.show()
+
+nullheatmap(df)
